@@ -11,7 +11,7 @@ import torch.nn.functional as F
 import torch.optim as optim
 import torch.utils.data.distributed
 from torch.utils.tensorboard import SummaryWriter
-from torchvision import datasets, transforms, models
+from torchvision import datasets, transforms
 
 import horovod.torch as hvd
 
@@ -329,11 +329,6 @@ def run():
         if os.path.exists(args.checkpoint_format.format(epoch=try_epoch)):
             resume_from_epoch = try_epoch
             break
-
-    # Horovod: broadcast resume_from_epoch from rank 0 (which will have
-    # checkpoints) to other ranks.
-    resume_from_epoch = hvd.broadcast(torch.tensor(resume_from_epoch), root_rank=0,
-                                      name='resume_from_epoch').item()
 
     # Load cifar10 dataset
     train_loader, val_loader, train_sampler, val_sampler = load_data()

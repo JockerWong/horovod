@@ -315,11 +315,6 @@ def run():
             resume_from_epoch = try_epoch
             break
 
-    # Horovod: broadcast resume_from_epoch from rank 0 (which will have
-    # checkpoints) to other ranks.
-    resume_from_epoch = hvd.broadcast(torch.tensor(resume_from_epoch), root_rank=0,
-                                      name='resume_from_epoch').item()
-
     # Load cifar10 dataset
     train_loader, val_loader, train_sampler, val_sampler = load_data()
 
